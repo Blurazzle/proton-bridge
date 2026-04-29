@@ -31,17 +31,6 @@ main(){
 
     jq -r '.finding | select( (.osv != null) and (.trace[0].function != null) ) | .osv ' < vulns.json > vulns_osv_ids.txt
 
-    ignore GO-2026-4918 "BRIDGE-554 net/http & /x/net/http2 infinite loop while processing HTTP/2 setting frames"
-    ignore GO-2026-4971 "BRIDGE-554 net Dial and LookupPort panics on Windows when receiving input with NUL (0)"
-    ignore GO-2026-4980 "BRIDGE-554 html/template escape data passed to <script> block"
-    ignore GO-2026-4982 "BRIDGE-554 html/template XSS vector if url contains ASCII whitespace"
-    ignore GO-2026-5025 "BRIDGE-554 /x/net parsing HTML using Render can lead to unexpected HTML tree."
-    ignore GO-2026-5026 "BRIDGE-554 /x/net ToASCII and ToUnicode incorrectly accept punycode-encoded labels."
-    ignore GO-2026-5027 "BRIDGE-554 /x/net parsing HTML using Render can lead to unexpected HTML tree."
-    ignore GO-2026-5028 "BRIDGE-554 /x/net parsing arbitrary HTML  can consume excessive CPU time"
-    ignore GO-2026-5029 "BRIDGE-554 /x/net parsing HTML using Render can lead to unexpected HTML tree."
-    ignore GO-2026-5030 "BRIDGE-554 /x/net parsing HTML using Render can lead to unexpected HTML tree."
-
     ignore GO-2026-5037 "BRIDGE-565 crypto/x509 fixes quadratic cost of verifying large DNS SAN lists."
     ignore GO-2026-5038 "BRIDGE-565 mime Decoding a maliciously-crafted MIME header containing many invalid encoded-words can consume excessive CPU"
     ignore GO-2026-5039 "BRIDGE-565 net/textproto When returning errors, functions in package would include input as part of error."

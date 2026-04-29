@@ -2,14 +2,14 @@ module github.com/ProtonMail/proton-bridge/v3
 
 go 1.26.1
 
-toolchain go1.26.2
+toolchain go1.26.3
 
 require (
 	github.com/0xAX/notificator v0.0.0-20220220101646-ee9b8921e557
 	github.com/Masterminds/semver/v3 v3.4.0
-	github.com/ProtonMail/gluon v0.17.1-0.20260424151019-88c1625c4ad6
+	github.com/ProtonMail/gluon v0.17.1-0.20260602080557-0cad973c1205
 	github.com/ProtonMail/go-autostart v0.0.0-20260210134425-40a9013f5ef4
-	github.com/ProtonMail/go-proton-api v0.4.1-0.20260424150947-6bf7f5a61eb8
+	github.com/ProtonMail/go-proton-api v0.4.1-0.20260602080559-c2ffcb64ce74
 	github.com/ProtonMail/gopenpgp/v2 v2.10.0-proton
 	github.com/PuerkitoBio/goquery v1.12.0
 	github.com/abiosoft/ishell v2.0.0+incompatible
@@ -49,10 +49,10 @@ require (
 	github.com/urfave/cli/v2 v2.27.7
 	github.com/vmihailenco/msgpack/v5 v5.4.1
 	go.uber.org/goleak v1.3.0
-	golang.org/x/net v0.52.0
+	golang.org/x/net v0.55.0
 	golang.org/x/oauth2 v0.36.0
-	golang.org/x/sys v0.43.0
-	golang.org/x/text v0.36.0
+	golang.org/x/sys v0.45.0
+	golang.org/x/text v0.37.0
 	google.golang.org/api v0.275.0
 	google.golang.org/grpc v1.80.0
 	google.golang.org/protobuf v1.36.11
@@ -143,11 +143,11 @@ require (
 	go.opentelemetry.io/otel/metric v1.43.0 // indirect
 	go.opentelemetry.io/otel/trace v1.43.0 // indirect
 	golang.org/x/arch v0.22.0 // indirect
-	golang.org/x/crypto v0.49.0 // indirect
+	golang.org/x/crypto v0.51.0 // indirect
 	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90 // indirect
-	golang.org/x/mod v0.34.0 // indirect
+	golang.org/x/mod v0.35.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/tools v0.43.0 // indirect
+	golang.org/x/tools v0.44.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260401024825-9d38bb4040a9 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
