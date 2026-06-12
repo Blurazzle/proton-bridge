@@ -78,3 +78,50 @@ func generateTestState(path string) (syncservice.Status, error) {
 
 	return status, storeImpl(&status, path)
 }
+
+func TestSyncState_StartSyncEventID(t *testing.T) {
+	tmpDir := t.TempDir()
+	testFile := GetSyncConfigPath(tmpDir, "test")
+
+	state, err := NewSyncState(testFile)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	const eventID = "EVENT_START"
+
+	status, err := state.GetSyncStatus(ctx)
+	require.NoError(t, err)
+	require.Empty(t, status.StartSyncEventID)
+
+	require.NoError(t, state.SetStartSyncEventID(ctx, eventID))
+
+	status, err = state.GetSyncStatus(ctx)
+	require.NoError(t, err)
+	require.Equal(t, eventID, status.StartSyncEventID)
+
+	reloaded, err := NewSyncState(testFile)
+	require.NoError(t, err)
+
+	status, err = reloaded.GetSyncStatus(ctx)
+	require.NoError(t, err)
+	require.Equal(t, eventID, status.StartSyncEventID)
+}
+
+func TestSyncState_ClearSyncStatusClearsStartSyncEventID(t *testing.T) {
+	tmpDir := t.TempDir()
+	testFile := GetSyncConfigPath(tmpDir, "test")
+
+	state, err := NewSyncState(testFile)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+	require.NoError(t, state.SetHasLabels(ctx, true))
+	require.NoError(t, state.SetStartSyncEventID(ctx, "EVENT_START"))
+
+	require.NoError(t, state.ClearSyncStatus(ctx))
+
+	status, err := state.GetSyncStatus(ctx)
+	require.NoError(t, err)
+	require.Empty(t, status.StartSyncEventID)
+	require.False(t, status.HasLabels)
+}

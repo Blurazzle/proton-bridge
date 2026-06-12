@@ -40,7 +40,7 @@ func TestServiceHandleEvent_CheckEventCategoriesHandledInOrder(t *testing.T) {
 	eventIDStore := NewInMemoryEventIDStore()
 
 	refreshHandler := NewMockRefreshEventHandler(mockCtrl)
-	refreshHandler.EXPECT().HandleRefreshEvent(gomock.Any(), gomock.Any()).Times(2).Return(nil)
+	refreshHandler.EXPECT().HandleRefreshEvent(gomock.Any(), gomock.Any(), gomock.Any()).Times(2).Return(nil)
 
 	userHandler := NewMockUserEventHandler(mockCtrl)
 	userCall := userHandler.EXPECT().HandleUserEvent(gomock.Any(), gomock.Any()).Times(1).Return(nil)
@@ -58,7 +58,7 @@ func TestServiceHandleEvent_CheckEventCategoriesHandledInOrder(t *testing.T) {
 	userSpaceCall := userSpaceHandler.EXPECT().HandleUsedSpaceEvent(gomock.Any(), gomock.Any()).After(messageCall).Times(1).Return(nil)
 
 	secondRefreshHandler := NewMockRefreshEventHandler(mockCtrl)
-	secondRefreshHandler.EXPECT().HandleRefreshEvent(gomock.Any(), gomock.Any()).After(userSpaceCall).Times(1).Return(nil)
+	secondRefreshHandler.EXPECT().HandleRefreshEvent(gomock.Any(), gomock.Any(), gomock.Any()).After(userSpaceCall).Times(1).Return(nil)
 
 	service := NewService(
 		"foo",

@@ -38,6 +38,8 @@ import (
 	"github.com/ProtonMail/proton-bridge/v3/internal/constants"
 	"github.com/ProtonMail/proton-bridge/v3/internal/events"
 	"github.com/ProtonMail/proton-bridge/v3/internal/services/imapservice"
+	"github.com/ProtonMail/proton-bridge/v3/internal/services/syncservice"
+	"github.com/ProtonMail/proton-bridge/v3/internal/vault"
 	"github.com/bradenaw/juniper/iterator"
 	"github.com/bradenaw/juniper/stream"
 	"github.com/bradenaw/juniper/xslices"
@@ -74,6 +76,10 @@ func TestBridge_Sync(t *testing.T) {
 				require.NoError(t, err)
 
 				require.Equal(t, userID, (<-syncCh).UserID)
+
+				syncStatus := loadLiveIMAPSyncStatus(t, bridge, userID)
+				require.True(t, syncStatus.IsComplete())
+				requireStartSyncEventIDEventuallyEmpty(t, bridge, userID)
 			})
 		})
 
@@ -407,11 +413,22 @@ func TestBridge_RefreshDuringSyncRestartSync(t *testing.T) {
 
 			require.Equal(t, userID, (<-syncStartedCh).UserID)
 
+			initialBookmark := requireStartSyncEventIDEventuallyNotEmpty(t, bridge, userID)
+
 			require.NoError(t, err, s.RefreshUser(userID, proton.RefreshMail))
+			refreshEventID := latestAPIEventID(ctx, t, s, "imap", password)
+			requireStartSyncEventIDEventually(t, bridge, userID, refreshEventID)
+
 			require.Equal(t, userID, (<-syncStartedCh).UserID)
 			refreshPerformed.Store(true)
 
 			require.Equal(t, userID, (<-syncCh).UserID)
+
+			requireStartSyncEventIDEventuallyEmpty(t, bridge, userID)
+			require.Eventually(t, func() bool {
+				return loadVaultEventID(t, locator, storeKey, userID) == refreshEventID
+			}, 5*time.Second, 10*time.Millisecond)
+			require.NotEqual(t, initialBookmark, refreshEventID)
 		})
 	}, server.WithTLS(false))
 }
@@ -463,6 +480,8 @@ func TestBridge_EventReplayAfterSyncHasFinished(t *testing.T) {
 
 			require.Equal(t, userID, (<-syncStartedCh).UserID)
 
+			startSyncBookmark := requireStartSyncEventIDEventuallyNotEmpty(t, bridge, userID)
+
 			// create 20 more messages and move them to inbox
 			withClient(ctx, t, s, "imap", password, func(ctx context.Context, c *proton.Client) {
 				createNumMessages(ctx, t, c, addrID, proton.InboxLabel, 20)
@@ -471,6 +490,8 @@ func TestBridge_EventReplayAfterSyncHasFinished(t *testing.T) {
 			// User AddrID2 event as a check point to see when the new address was created.
 			addrID2, err := s.CreateAddress(userID, "bar@proton.ch", password, true)
 			require.NoError(t, err)
+
+			require.Equal(t, startSyncBookmark, loadLiveIMAPSyncStatus(t, bridge, userID).StartSyncEventID)
 
 			allowSyncToProgress.Store(true)
 			require.Equal(t, userID, (<-syncCh).UserID)
@@ -604,6 +625,10 @@ func TestBridge_CorruptedVaultClearsPreviousIMAPSyncState(t *testing.T) {
 
 			// Wait for sync to finish
 			require.Equal(t, userID, (<-syncCh).UserID)
+
+			syncStatus := loadLiveIMAPSyncStatus(t, bridge, userID)
+			require.True(t, syncStatus.IsComplete())
+			requireStartSyncEventIDEventuallyEmpty(t, bridge, userID)
 		})
 
 		settingsPath, err := locator.ProvideSettingsPath()
@@ -731,6 +756,91 @@ func TestBridge_AddressOrderChangeDuringSyncInCombinedModeDoesNotTriggerBadEvent
 			}
 		})
 	})
+}
+
+func loadIMAPSyncStatusFromDisk(t *testing.T, locator bridge.Locator, userID string) syncservice.Status {
+	t.Helper()
+
+	syncConfigPath, err := locator.ProvideIMAPSyncConfigPath()
+	require.NoError(t, err)
+
+	state, err := imapservice.NewSyncState(imapservice.GetSyncConfigPath(syncConfigPath, userID))
+	require.NoError(t, err)
+
+	status, err := state.GetSyncStatus(context.Background())
+	require.NoError(t, err)
+
+	return status
+}
+
+func loadLiveIMAPSyncStatus(t *testing.T, b *bridge.Bridge, userID string) syncservice.Status {
+	t.Helper()
+
+	status, err := b.IMAPSyncStatus(context.Background(), userID)
+	require.NoError(t, err)
+
+	return status
+}
+
+func loadVaultEventID(t *testing.T, locator bridge.Locator, vaultKey []byte, userID string) string {
+	t.Helper()
+
+	vaultDir, err := locator.ProvideSettingsPath()
+	require.NoError(t, err)
+
+	v, _, err := vault.New(vaultDir, t.TempDir(), vaultKey, async.NoopPanicHandler{})
+	require.NoError(t, err)
+
+	var eventID string
+	require.NoError(t, v.GetUser(userID, func(user *vault.User) {
+		eventID = user.EventID()
+	}))
+
+	return eventID
+}
+
+func latestAPIEventID(ctx context.Context, t *testing.T, s *server.Server, username string, password []byte) string { // nolint:unparam
+	t.Helper()
+
+	var eventID string
+
+	withClient(ctx, t, s, username, password, func(ctx context.Context, c *proton.Client) {
+		id, err := c.GetLatestEventID(ctx)
+		require.NoError(t, err)
+		eventID = id
+	})
+
+	return eventID
+}
+
+func requireStartSyncEventIDEventually(t *testing.T, b *bridge.Bridge, userID, want string) {
+	t.Helper()
+
+	require.Eventually(t, func() bool {
+		return loadLiveIMAPSyncStatus(t, b, userID).StartSyncEventID == want
+	}, 30*time.Second, 1*time.Second)
+}
+
+func requireStartSyncEventIDEventuallyNotEmpty(t *testing.T, b *bridge.Bridge, userID string) string {
+	t.Helper()
+
+	var bookmark string
+
+	require.Eventually(t, func() bool {
+		bookmark = loadLiveIMAPSyncStatus(t, b, userID).StartSyncEventID
+
+		return bookmark != ""
+	}, 30*time.Second, 1*time.Second)
+
+	return bookmark
+}
+
+func requireStartSyncEventIDEventuallyEmpty(t *testing.T, b *bridge.Bridge, userID string) {
+	t.Helper()
+
+	require.Eventually(t, func() bool {
+		return loadLiveIMAPSyncStatus(t, b, userID).StartSyncEventID == ""
+	}, 30*time.Second, 1*time.Second)
 }
 
 func withClient(ctx context.Context, t *testing.T, s *server.Server, username string, password []byte, fn func(context.Context, *proton.Client)) { //nolint:unparam

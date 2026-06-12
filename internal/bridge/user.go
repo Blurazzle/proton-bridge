@@ -32,6 +32,7 @@ import (
 	"github.com/ProtonMail/proton-bridge/v3/internal/logging"
 	"github.com/ProtonMail/proton-bridge/v3/internal/safe"
 	"github.com/ProtonMail/proton-bridge/v3/internal/services/imapservice"
+	"github.com/ProtonMail/proton-bridge/v3/internal/services/syncservice"
 	"github.com/ProtonMail/proton-bridge/v3/internal/try"
 	"github.com/ProtonMail/proton-bridge/v3/internal/user"
 	"github.com/ProtonMail/proton-bridge/v3/internal/vault"
@@ -107,6 +108,18 @@ func (bridge *Bridge) GetUserInfo(userID string) (UserInfo, error) {
 		}
 
 		return info, nil
+	}, bridge.usersLock)
+}
+
+// IMAPSyncStatus returns the live in-memory IMAP sync status for a connected user.
+func (bridge *Bridge) IMAPSyncStatus(ctx context.Context, userID string) (syncservice.Status, error) {
+	return safe.RLockRetErr(func() (syncservice.Status, error) {
+		user, ok := bridge.users[userID]
+		if !ok {
+			return syncservice.Status{}, ErrNoSuchUser
+		}
+
+		return user.IMAPSyncStatus(ctx)
 	}, bridge.usersLock)
 }
 

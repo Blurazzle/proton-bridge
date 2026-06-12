@@ -73,7 +73,7 @@ func TestService_OnRefreshEvent(t *testing.T) {
 	}
 
 	// Original value, no changes.
-	require.NoError(t, service.HandleRefreshEvent(context.Background(), 0))
+	require.NoError(t, service.HandleRefreshEvent(context.Background(), 0, ""))
 
 	require.Equal(t, *newUser, service.identity.User)
 	require.Equal(t, newAddresses, service.identity.AddressesSorted)

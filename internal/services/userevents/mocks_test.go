@@ -232,17 +232,17 @@ func (m *MockRefreshEventHandler) EXPECT() *MockRefreshEventHandlerMockRecorder 
 }
 
 // HandleRefreshEvent mocks base method.
-func (m *MockRefreshEventHandler) HandleRefreshEvent(ctx context.Context, flag proton.RefreshFlag) error {
+func (m *MockRefreshEventHandler) HandleRefreshEvent(ctx context.Context, flag proton.RefreshFlag, eventID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HandleRefreshEvent", ctx, flag)
+	ret := m.ctrl.Call(m, "HandleRefreshEvent", ctx, flag, eventID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // HandleRefreshEvent indicates an expected call of HandleRefreshEvent.
-func (mr *MockRefreshEventHandlerMockRecorder) HandleRefreshEvent(ctx, flag any) *gomock.Call {
+func (mr *MockRefreshEventHandlerMockRecorder) HandleRefreshEvent(ctx, flag, eventID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HandleRefreshEvent", reflect.TypeOf((*MockRefreshEventHandler)(nil).HandleRefreshEvent), ctx, flag)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HandleRefreshEvent", reflect.TypeOf((*MockRefreshEventHandler)(nil).HandleRefreshEvent), ctx, flag, eventID)
 }
 
 // MockUserEventHandler is a mock of UserEventHandler interface.

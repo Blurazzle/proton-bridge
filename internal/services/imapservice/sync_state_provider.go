@@ -155,6 +155,15 @@ func (s *SyncState) SetMessageCount(_ context.Context, i int64) error {
 	return s.storeUnsafe()
 }
 
+func (s *SyncState) SetStartSyncEventID(_ context.Context, id string) error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	s.status.StartSyncEventID = id
+
+	return s.storeUnsafe()
+}
+
 func (s *SyncState) storeUnsafe() error {
 	return storeImpl(&s.status, s.filePath)
 }
