@@ -32,7 +32,6 @@ require (
 	github.com/go-ctap/winhello v0.1.0
 	github.com/go-resty/resty/v2 v2.17.2
 	github.com/godbus/dbus v4.1.0+incompatible
-	github.com/golang/mock v1.6.0
 	github.com/google/go-cmp v0.7.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-multierror v1.1.1
@@ -49,6 +48,7 @@ require (
 	github.com/urfave/cli/v2 v2.27.7
 	github.com/vmihailenco/msgpack/v5 v5.4.1
 	go.uber.org/goleak v1.3.0
+	go.uber.org/mock v0.6.0
 	golang.org/x/net v0.55.0
 	golang.org/x/oauth2 v0.36.0
 	golang.org/x/sys v0.45.0

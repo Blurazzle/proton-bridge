@@ -226,8 +226,8 @@ LINTSRC:="https://raw.githubusercontent.com/golangci/golangci-lint/master/instal
 install-dev-dependencies: install-devel-tools install-linter install-go-mod-outdated install-test-tools
 
 install-devel-tools: check-has-go
-	go get -v github.com/golang/mock/gomock
-	go get -v github.com/golang/mock/mockgen
+	go get -v go.uber.org/mock
+	go install go.uber.org/mock/mockgen@latest
 	go get -v github.com/go-delve/delve
 
 install-test-tools: check-has-go check-has-gotestsum
@@ -355,7 +355,7 @@ EventSubscriber,MessageEventHandler,LabelEventHandler,AddressEventHandler,Refres
 	mv tmp internal/services/userevents/mocks_test.go
 	mockgen --package mocks github.com/ProtonMail/proton-bridge/v3/internal/events EventPublisher \
 > internal/events/mocks/mocks.go
-	mockgen --package mocks github.com/ProtonMail/proton-bridge/v3/internal/services/useridentity IdentityProvider,Telemetry \
+	mockgen --package mocks github.com/ProtonMail/proton-bridge/v3/internal/services/useridentity IdentityProvider \
 > internal/services/useridentity/mocks/mocks.go
 	mockgen --self_package "github.com/ProtonMail/proton-bridge/v3/internal/services/syncservice" -package syncservice github.com/ProtonMail/proton-bridge/v3/internal/services/syncservice \
 ApplyStageInput,BuildStageInput,BuildStageOutput,DownloadStageInput,DownloadStageOutput,MetadataStageInput,MetadataStageOutput,\

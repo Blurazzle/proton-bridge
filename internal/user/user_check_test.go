@@ -23,8 +23,8 @@ import (
 
 	"github.com/ProtonMail/proton-bridge/v3/internal/events/mocks"
 	"github.com/ProtonMail/proton-bridge/v3/internal/services/imapservice"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestCheckIrrecoverableEventID_EventIDIsEmptyButNoSyncStarted(t *testing.T) {
