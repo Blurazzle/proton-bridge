@@ -24,6 +24,7 @@ import (
 	"slices"
 
 	"github.com/ProtonMail/proton-bridge/v3/pkg/utils"
+	"github.com/sirupsen/logrus"
 )
 
 type User struct {
@@ -123,6 +124,10 @@ func (user *User) AuthRef() string {
 // SetAuth sets the auth secrets for the given user.
 func (user *User) SetAuth(authUID, authRef string) error {
 	return user.vault.modUser(user.userID, func(data *UserData) {
+		logrus.WithFields(logrus.Fields{
+			"pkg":     "gpa/client",
+			"AuthUID": authUID,
+		}).Debugf("Setting new AuthUID in vault.")
 		data.AuthUID = authUID
 		data.AuthRef = authRef
 	})

@@ -198,6 +198,7 @@ func newImpl(
 
 	logrus.WithFields(logrus.Fields{
 		"userID":    apiUser.ID,
+		"authUID":   encVault.AuthUID(),
 		"numAddr":   len(apiAddrs),
 		"numLabels": len(apiLabels),
 	}).Info("Creating user object")
