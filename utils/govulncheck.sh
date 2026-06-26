@@ -27,7 +27,7 @@ main(){
 
     ## go install golang.org/x/vuln/cmd/govulncheck@latest
     make gofiles
-    GOTOOLCHAIN=auto go run golang.org/x/vuln/cmd/govulncheck@v1.3.0 -json ./... > vulns.json
+    GOTOOLCHAIN=auto go run golang.org/x/vuln/cmd/govulncheck@latest -json ./... > vulns.json
 
     jq -r '.finding | select( (.osv != null) and (.trace[0].function != null) ) | .osv ' < vulns.json > vulns_osv_ids.txt
 
