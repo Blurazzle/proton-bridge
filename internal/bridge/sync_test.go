@@ -161,7 +161,8 @@ func _TestBridge_Sync_BadMessage(t *testing.T) { //nolint:unused
 		var messageIDs []string
 
 		withClient(ctx, t, s, "imap", password, func(ctx context.Context, c *proton.Client) {
-			messageIDs = createMessages(ctx, t, c, addrID, labelID,
+			messageIDs = createMessages(
+				ctx, t, c, addrID, labelID,
 				[]byte("To: someone@pm.me\r\nSubject: Good message\r\n\r\nHello!"),
 				[]byte("To: someone@pm.me\r\nSubject: Bad message\r\nContentType: this is not a valid content type\r\n\r\nHello!"),
 			)
@@ -743,16 +744,17 @@ func TestBridge_AddressOrderChangeDuringSyncInCombinedModeDoesNotTriggerBadEvent
 					info.Addresses[1] == "foo@"+s.GetDomain()
 			}, 30*time.Second, 200*time.Millisecond)
 
-			//  check if additional events are observed
-			select {
-			case badEvt := <-userBadEvent:
-				t.Errorf("unexpected UserBadEvent: %+v", badEvt)
-				return
-			case extraChangedEvt := <-userInfoChanged:
-				t.Errorf("unexpected extra UserChanged event: %+v", extraChangedEvt)
-				return
-			case <-time.After(5 * time.Second):
-				// No additional events observed, as expected.
+			for {
+				select {
+				case badEvt := <-userBadEvent:
+					t.Errorf("unexpected UserBadEvent: %+v", badEvt)
+					return
+				case extraChangedEvt := <-userInfoChanged:
+					t.Errorf("unexpected extra UserChanged event: %+v", extraChangedEvt)
+					return
+				case <-time.After(10 * time.Second):
+					return
+				}
 			}
 		})
 	})
