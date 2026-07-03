@@ -42,8 +42,8 @@ github.com/ProtonMail/go-message v0.13.1-0.20240919135104-3bc88e6a9423 h1:p8nBDx
 github.com/ProtonMail/go-message v0.13.1-0.20240919135104-3bc88e6a9423/go.mod h1:NBAn21zgCJ/52WLDyed18YvYFm5tEoeDauubFqLokM4=
 github.com/ProtonMail/go-mime v0.0.0-20230322103455-7d82a3887f2f h1:tCbYj7/299ekTTXpdwKYF8eBlsYsDVoggDAuAjoK66k=
 github.com/ProtonMail/go-mime v0.0.0-20230322103455-7d82a3887f2f/go.mod h1:gcr0kNtGBqin9zDW9GOHcVntrwnjrK+qdJ06mWYBybw=
-github.com/ProtonMail/go-proton-api v0.4.1-0.20260630135226-efb5c12c583f h1:GtKD0eP4CriRXiPRAxwsOzDcRiU1XdHgfzmTl4gnxVA=
-github.com/ProtonMail/go-proton-api v0.4.1-0.20260630135226-efb5c12c583f/go.mod h1:cBy/sTMscP/oS5oyM7of4QpZYbVBsAohaxp1ws1WXhw=
+github.com/ProtonMail/go-proton-api v0.4.1-0.20260706142429-63e30a8a9f3e h1:feneqrEXniifZAzusn8YfjgDXW50qd2hqnrM4FgXR5Y=
+github.com/ProtonMail/go-proton-api v0.4.1-0.20260706142429-63e30a8a9f3e/go.mod h1:cBy/sTMscP/oS5oyM7of4QpZYbVBsAohaxp1ws1WXhw=
 github.com/ProtonMail/go-smtp v0.0.0-20231109081432-2b3d50599865 h1:EP1gnxLL5Z7xBSymE9nSTM27nRYINuvssAtDmG0suD8=
 github.com/ProtonMail/go-smtp v0.0.0-20231109081432-2b3d50599865/go.mod h1:qm27SGYgoIPRot6ubfQ/GpiPy/g3PaZAVRxiO/sDUgQ=
 github.com/ProtonMail/go-srp v0.0.7 h1:Sos3Qk+th4tQR64vsxGIxYpN3rdnG9Wf9K4ZloC1JrI=
