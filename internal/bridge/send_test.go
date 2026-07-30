@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -313,19 +314,26 @@ func TestBridge_SendInvite(t *testing.T) {
 				require.NoError(t, imapClient.Expunge(nil))
 			}
 
+			var waitFor time.Duration
+			if runtime.GOOS == "windows" {
+				waitFor = 60 * time.Second
+			} else {
+				waitFor = 30 * time.Second
+			}
+
 			// Assert that the draft is eventually gone.
 			require.Eventually(t, func() bool {
 				status, err := imapClient.Select("Drafts", false)
 				require.NoError(t, err)
 				return status.Messages == 0
-			}, 30*time.Second, 1*time.Second)
+			}, waitFor, 1*time.Second)
 
 			// Assert that the message is eventually in the sent folder.
 			require.Eventually(t, func() bool {
 				messages, err := clientFetch(imapClient, "Sent")
 				require.NoError(t, err)
 				return len(messages) == 1
-			}, 30*time.Second, 1*time.Second)
+			}, waitFor, 1*time.Second)
 
 			// Assert that the message is not marked as a draft.
 			{
