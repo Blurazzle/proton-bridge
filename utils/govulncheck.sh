@@ -31,10 +31,6 @@ main(){
 
     jq -r '.finding | select( (.osv != null) and (.trace[0].function != null) ) | .osv ' < vulns.json > vulns_osv_ids.txt
 
-    ignore GO-2026-5856 "BRIDGE-587 Handshakes which used Encrypted Client Hello could be de-anonymized by passive network observer."
-    ignore GO-2026-5970 "BRIDGE-587 A norm.iter can enter an infinite loop when handling input containing invalid UTF-8 bytes."
-    ignore GO-2026-6061 "BRIDGE-587 Vulnerabilities in the xDS RBAC authorization engine."
-
     has_vulns
 
     echo
