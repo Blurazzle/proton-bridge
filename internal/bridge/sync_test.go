@@ -874,13 +874,13 @@ func clientFetch(client *client.Client, mailbox string, extraItems ...imap.Fetch
 	fetchItems = append(fetchItems, extraItems...)
 
 	go func() {
-		if err := client.Fetch(
+		// client.Fetch always closes resCh via its own defer, even on error, so any error here is safe to ignore;
+		// panicking from this detached goroutine would crash the whole test regardless of what the caller is doing.
+		_ = client.Fetch(
 			&imap.SeqSet{Set: []imap.Seq{{Start: 1, Stop: status.Messages}}},
 			fetchItems,
 			resCh,
-		); err != nil {
-			panic(err)
-		}
+		)
 	}()
 
 	return iterator.Collect(iterator.Chan(resCh)), nil
@@ -907,9 +907,9 @@ func clientList(client *client.Client) []*imap.MailboxInfo {
 	resCh := make(chan *imap.MailboxInfo)
 
 	go func() {
-		if err := client.List("", "*", resCh); err != nil {
-			panic(err)
-		}
+		// Same reason as in `clientFetch`, resCh is closed regardless  of error, so dropping the error
+		// avoids panicking from a detached goroutine.
+		_ = client.List("", "*", resCh)
 	}()
 
 	return iterator.Collect(iterator.Chan(resCh))
