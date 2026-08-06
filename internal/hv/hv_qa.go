@@ -47,9 +47,9 @@ func parseAPIHost() (string, error) {
 	parts := strings.Split(host, ".")
 
 	if len(parts) <= 2 {
-		host = "verify" + "." + host
+		host = "https://verify" + "." + host
 	} else {
-		host = "verify" + "." + strings.Join(parts[1:], ".")
+		host = "https://verify" + "." + strings.Join(parts[1:], ".")
 	}
 	return host, nil
 }
