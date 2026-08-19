@@ -32,23 +32,14 @@ func listHelpers() (Helpers, string) {
 
 	if isUsable(newPassHelper("")) {
 		helpers[Pass] = newPassHelper
-		logrus.WithField("keychain", "Pass").Info("Keychain is usable.")
+		logrus.WithField("keychain", "Pass").Info("Keychain pass is usable.")
 	} else {
-		logrus.WithField("keychain", "Pass").Debug("Keychain is not available.")
+		logrus.WithField("keychain", "Pass").Debug("Keychain pass is not available.")
 	}
-
 	
 	return helpers, Pass
 }
 
-// func newDBusHelper(string) (credentials.Helper, error) {
-//   return &SecretServiceDBusHelper{}, nil
-// }
-
 func newPassHelper(string) (credentials.Helper, error) {
 	return &pass.Pass{}, nil
 }
-
-// func newSecretServiceHelper(string) (credentials.Helper, error) {
-//	  return &secretservice.Secretservice{}, nil
-// }

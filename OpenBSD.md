@@ -7,7 +7,7 @@ This document describes how to build and run Proton Mail Bridge on OpenBSD.
 Install the required build dependencies:
 
 ```sh
-doas pkg_add bash gmake go
+doas pkg_add bash gmake go password-store
 ````
 
 Build the command-line version without the desktop GUI:
@@ -57,7 +57,7 @@ pass init proton-bridge
 Start Bridge in command-line mode:
 
 ```sh
-./proton-bridge -c
+./bridge -c
 ```
 
 The `-c` option starts Bridge without the desktop interface.
@@ -96,13 +96,8 @@ gmake build-nogui
 gpg --generate-key --batch --quiet utils-bsd/gpgparams
 pass init proton-bridge
 
-./proton-bridge -c
+./bridge -c
 ```
 ## Development Note
-
-AI tools were used as an assisting tool during development, primarily for
-OpenBSD- and Go-specific research, troubleshooting, and suggestions.
-
-The changes were reviewed, adapted, and tested manually. I have extensive
-software development experience, particularly with Linux, but less
-experience with OpenBSD and Go.
+AI tools were used as an assisting tool during development, primarily for OpenBSD- and Go-specific research, troubleshooting, and suggestions.
+The changes were reviewed, adapted, and tested manually. I have extensive software development experience, particularly in web development managing Linux server, but less experience with OpenBSD and Go.
