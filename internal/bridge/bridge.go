@@ -468,7 +468,9 @@ func (bridge *Bridge) init(tlsReporter TLSReporter) error {
 			bridge.handleUpdate(version)
 		}
 	})
-	defer bridge.goUpdate()
+	if runtime.GOOS != "openbsd" {
+	  defer bridge.goUpdate()
+    }
 
 	// Install updates when available - based on new update logic
 	bridge.tasks.Once(func(ctx context.Context) {
