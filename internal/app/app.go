@@ -452,7 +452,9 @@ func withLogging(c *cli.Context, crashHandler *crash.Handler, locations *locatio
 
 	host, err := sysinfo.Host()
 	if err != nil {
-		logrus.WithError(err).Error("Could not retrieve operating system info")
+		if runtime.GOOS != "openbsd" {
+			logrus.WithError(err).Error("Could not retrieve operating system info")
+		}
 	} else {
 		osInfo := host.Info().OS
 		logrus.
