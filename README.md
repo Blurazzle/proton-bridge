@@ -1,3 +1,6 @@
+> [!IMPORTANT]  
+> Read [README_BSD](./README_BSD.md) for building Proton Mail Bridge on OpenBSD or FreeBSD.
+
 # Proton Mail Bridge
 Copyright (c) 2026 Proton AG
 
